@@ -2,6 +2,35 @@
 <?php 
 // We must start the session on every page to remember the user.
 session_start(); 
+require_once 'config/db.php';
+require_once 'actions/fetch_items_action.php';
+
+// Fetch marketplace items
+$marketplace_items = getAvailableItems($pdo);
+
+// Fetch user's actual balance if logged in
+if (isset($_SESSION['user_id'])) {
+    try {
+        $stmt_balance = $pdo->prepare("SELECT wastecoins, qr_token FROM users WHERE id = :user_id");
+        $stmt_balance->execute(['user_id' => $_SESSION['user_id']]);
+        $user_data = $stmt_balance->fetch();
+        $user_balance = $user_data['wastecoins'] ?? 0;
+
+        // Generate a new qr_token if they don't have one
+        if (empty($user_data['qr_token'])) {
+            $new_token = bin2hex(random_bytes(16));
+            $stmt_update_token = $pdo->prepare("UPDATE users SET qr_token = :token WHERE id = :id");
+            $stmt_update_token->execute(['token' => $new_token, 'id' => $_SESSION['user_id']]);
+            $qr_token = $new_token;
+        } else {
+            $qr_token = $user_data['qr_token'];
+        }
+
+    } catch (PDOException $e) {
+        $user_balance = 0;
+        $qr_token = 'error';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -220,8 +249,14 @@ session_start();
                     
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h2 class="text-xl font-bold mb-4">Your Wallet</h2>
-                        <p class="text-5xl font-bold text-green-600">0 <span class="text-3xl text-gray-500">WC</span></p>
+                        <p class="text-5xl font-bold text-green-600"><?php echo htmlspecialchars($user_balance ?? 0); ?> <span class="text-3xl text-gray-500">WC</span></p>
                         <p class="text-gray-500 mt-2">Your available WasteCoin balance.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
+                        <h2 class="text-xl font-bold mb-4">Redeem in Stores</h2>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ecoloop_user:<?php echo urlencode($_SESSION['user_id']); ?>_token:<?php echo urlencode($qr_token); ?>" alt="Your QR Code">
+                        <p class="text-gray-500 mt-2 text-center">Show this QR code to partner stores to get discounts.</p>
                     </div>
 
                     <div class="bg-white p-6 rounded-lg shadow-md">
@@ -236,7 +271,42 @@ session_start();
                                 <label for="description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
                                 <textarea name="description" id="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm p-2"></textarea>
                             </div>
+                             <div>
+                                <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                                <select name="category" id="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm p-2">
+                                    <option value="General">General</option>
+                                    <option value="Plastic">Plastic</option>
+                                    <option value="E-Waste">E-Waste</option>
+                                    <option value="Organic">Organic (For Partnered Factories)</option>
+                                </select>
+                            </div>
                             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Upload for Verification</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Sell on Marketplace</h2>
+                        <p class="text-gray-600 mb-4">Got something you don't need? List it here for WasteCoins.</p>
+                        <form action="actions/list_item_action.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="item_title" class="block text-sm font-medium text-gray-700">Item Title</label>
+                                    <input type="text" name="item_title" id="item_title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm p-2">
+                                </div>
+                                <div>
+                                    <label for="item_price" class="block text-sm font-medium text-gray-700">Price (in WasteCoins)</label>
+                                    <input type="number" name="item_price" id="item_price" min="1" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm p-2">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="item_description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea name="item_description" id="item_description" rows="3" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm p-2"></textarea>
+                            </div>
+                            <div>
+                                <label for="item_image" class="block text-sm font-medium text-gray-700">Item Image</label>
+                                <input type="file" name="item_image" id="item_image" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                            </div>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">List Item</button>
                         </form>
                     </div>
 
@@ -251,6 +321,32 @@ session_start();
                         <div class="mb-8 text-center">
                             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800">Community Marketplace</h1>
                             <p class="mt-2 text-lg text-gray-600">Use your WasteCoins to get pre-loved items from other EcoLoop members.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <?php if (empty($marketplace_items)): ?>
+                                <p class="text-gray-500 col-span-full text-center py-8">No items currently available in the marketplace.</p>
+                            <?php else: ?>
+                                <?php foreach ($marketplace_items as $item): ?>
+                                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                                        <div class="relative">
+                                            <img src="uploads/<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" class="w-full h-56 object-cover">
+                                            <div class="absolute top-2 right-2 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full"><?php echo htmlspecialchars($item['price']); ?> WC</div>
+                                        </div>
+                                        <div class="p-5 flex flex-col flex-grow">
+                                            <h3 class="text-xl font-bold text-gray-800 truncate"><?php echo htmlspecialchars($item['title']); ?></h3>
+                                            <p class="text-gray-500 text-sm mb-3">Listed by: <span class="font-medium text-gray-600"><?php echo htmlspecialchars($item['username']); ?></span></p>
+                                            <p class="text-gray-600 flex-grow text-sm leading-relaxed line-clamp-3"><?php echo htmlspecialchars($item['description']); ?></p>
+                                            <div class="mt-4">
+                                                <form action="actions/buy_item_action.php" method="POST">
+                                                    <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>">
+                                                    <button type="submit" class="w-full block text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">Buy Item</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
