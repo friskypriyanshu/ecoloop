@@ -84,7 +84,8 @@ try {
                 <?php foreach ($pending_proofs as $proof): ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <a href="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" target="_blank">
-                            <img src="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" alt="Waste Proof Image" class="w-full h-48 object-cover">
+                            <!-- Bolt: Native lazy loading defers offscreen images -->
+                            <img src="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" alt="Waste Proof Image" loading="lazy" class="w-full h-48 object-cover">
                         </a>
                         <div class="p-4">
                             <p class="text-sm text-gray-500">Submitted by: <span class="font-semibold text-gray-700"><?php echo htmlspecialchars($proof['username']); ?></span></p>
