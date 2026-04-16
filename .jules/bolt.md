@@ -1,0 +1,3 @@
+## 2026-04-16 - Hidden Tab Image Loading Bottleneck
+**Learning:** The application uses client-side routing where all pages/tabs are rendered in HTML and toggled using `display: none`. This means all `<img>` tags inside hidden tabs (like the Marketplace and Dashboard QR code) are eagerly downloaded by the browser on the initial page load, causing a significant network bottleneck and unnecessary data transfer.
+**Action:** Always add `loading="lazy"` to images inside tabs that are not visible on the initial "Home" view, or consider implementing a real dynamic routing system if the bundle size/DOM node count becomes too large.
