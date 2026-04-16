@@ -255,7 +255,8 @@ if (isset($_SESSION['user_id'])) {
                     
                     <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
                         <h2 class="text-xl font-bold mb-4">Redeem in Stores</h2>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ecoloop_user:<?php echo urlencode($_SESSION['user_id']); ?>_token:<?php echo urlencode($qr_token); ?>" alt="Your QR Code">
+                        <!-- Added lazy loading for optimization since this might be off-screen or on a hidden tab -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ecoloop_user:<?php echo urlencode($_SESSION['user_id']); ?>_token:<?php echo urlencode($qr_token); ?>" alt="Your QR Code" loading="lazy">
                         <p class="text-gray-500 mt-2 text-center">Show this QR code to partner stores to get discounts.</p>
                     </div>
 
@@ -330,7 +331,8 @@ if (isset($_SESSION['user_id'])) {
                                 <?php foreach ($marketplace_items as $item): ?>
                                     <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
                                         <div class="relative">
-                                            <img src="uploads/<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" class="w-full h-56 object-cover">
+                                            <!-- Added lazy loading for optimization as marketplace items are in a hidden tab initially and can be numerous -->
+                                            <img src="uploads/<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" class="w-full h-56 object-cover" loading="lazy">
                                             <div class="absolute top-2 right-2 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full"><?php echo htmlspecialchars($item['price']); ?> WC</div>
                                         </div>
                                         <div class="p-5 flex flex-col flex-grow">
