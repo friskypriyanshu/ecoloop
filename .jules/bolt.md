@@ -1,0 +1,3 @@
+## 2026-04-17 - [Initial Page Load Optimization with Lazy Loading]
+**Learning:** The application uses client-side JavaScript routing by toggling `display: none` / `display: block` on sections (e.g., hidden tabs) in `index.php`. Consequently, all images nested within those hidden tabs (like marketplace listings) are fetched synchronously on the initial page load, causing a significant performance bottleneck.
+**Action:** Always add `loading="lazy"` to images (e.g., `<img loading="lazy" ...>`), especially within sections hidden by default, to defer image loading until the section becomes visible or is about to enter the viewport.
