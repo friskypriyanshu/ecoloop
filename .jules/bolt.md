@@ -1,0 +1,3 @@
+## 2026-04-20 - [Client-Side Tab Routing Resource Loading Issue]
+**Learning:** The application uses client-side JavaScript routing to hide/show tabs, meaning `index.php` renders all HTML content (including hidden sections and their nested media) on the initial page load. This causes external API calls (like QR code generation) and potentially hundreds of marketplace images to block the initial load even if those tabs are never visited.
+**Action:** Implemented `loading="lazy"` on all images (`<img>` tags) in `index.php`, specifically the marketplace images and the external QR code API call, to defer loading until they are actually scrolled into view (which happens when the tab is made visible).
