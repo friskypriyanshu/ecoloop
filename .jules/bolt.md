@@ -1,0 +1,3 @@
+## 2026-04-21 - Client-side Routing Causes Eager Image Loading Bottleneck
+**Learning:** Because the app uses client-side JavaScript to hide/show UI tabs in `index.php`, all HTML (including hidden sections) is rendered on the initial page load. This causes the browser to eagerly load all images (e.g., marketplace uploads and external API calls like QR codes) even when the user hasn't opened those tabs, which is a major performance bottleneck for initial load time.
+**Action:** Always add `loading="lazy"` to `<img>` tags and other media elements inside hidden UI sections/tabs so the browser defers loading them until they actually become visible to the user.
