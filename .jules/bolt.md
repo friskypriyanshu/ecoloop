@@ -1,0 +1,3 @@
+## 2024-05-18 - [Deferring Image Loading in Initially Hidden Sections]
+**Learning:** The application uses client-side JavaScript routing to toggle visibility of different tabs (e.g., Dashboard vs. Marketplace). Because the initial PHP response (`index.php`) renders all HTML for all sections regardless of visibility, all images across all tabs are fetched upfront on initial load. This creates a bottleneck where unseen content delays the loading of visible content.
+**Action:** Always add `loading="lazy"` to `<img>` tags, especially those that reside in initially hidden sections of the single-page layout, to defer loading until they enter the viewport and significantly reduce initial page load payload and network blocking.
