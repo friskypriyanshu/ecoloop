@@ -1,0 +1,3 @@
+## 2024-06-15 - [Eager Loading Bottleneck in Hidden Tabs]
+**Learning:** The application architecture uses client-side JavaScript routing to hide/show tabs, meaning `index.php` renders all HTML content (including hidden sections and their nested media like external API calls and images) on the initial page load. This causes unnecessary network requests for resources that the user might never see if they don't click those tabs.
+**Action:** Mitigate this eager loading bottleneck by adding `loading="lazy"` to media elements (like images and external API calls) within hidden sections to defer loading until they become visible.
