@@ -1,0 +1,3 @@
+## 2024-04-30 - [Eager Loading Bottleneck in Client-Side Tabs]
+**Learning:** In the EcoLoop application architecture, `index.php` renders all content upfront and uses client-side JavaScript routing to simply hide/show tabs. This causes all images (like marketplace items and external QR code API calls) within hidden tabs to be eagerly loaded on the initial page request, creating a performance bottleneck.
+**Action:** When working on frontend UI in this architecture, always add `loading="lazy"` to images or heavy media elements that reside inside hidden tabs to defer their loading until they actually become visible to the user.
