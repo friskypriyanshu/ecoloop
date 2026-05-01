@@ -1,0 +1,3 @@
+## 2024-05-01 - [Client-Side Routing & Eager Loading Pattern]
+**Learning:** The application uses simple client-side JavaScript routing (via hiding/showing tabs), which means `index.php` renders all HTML content—including hidden sections (`#marketplace`, `#dashboard`) and their nested media—upfront on the initial page load. This eager loading is a performance bottleneck.
+**Action:** Always mitigate this eager loading bottleneck by adding `loading="lazy"` to media elements (like images, external API calls for QR codes) within these hidden sections to defer their loading until they become visible to the user.
