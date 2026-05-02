@@ -1,0 +1,3 @@
+## 2024-05-02 - Eager Loading in Client-Side Routed PHP Apps
+**Learning:** In applications like EcoLoop that use client-side JavaScript routing to hide/show tabs while rendering all HTML content (including hidden sections) upfront on the initial page load, eager loading of media elements (like images or external QR code APIs) inside hidden tabs creates a significant performance bottleneck. The browser attempts to fetch all media at once, even if the user never navigates to those tabs.
+**Action:** Always add `loading="lazy"` to `<img>` tags, especially in lists (like the marketplace) or for external API calls, to defer fetching the assets until the containing element becomes visible in the viewport.
