@@ -84,7 +84,8 @@ try {
                 <?php foreach ($pending_proofs as $proof): ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <a href="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" target="_blank">
-                            <img src="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" alt="Waste Proof Image" class="w-full h-48 object-cover">
+                            <!-- Optimization: Added loading="lazy" to defer loading off-screen proof images -->
+                            <img loading="lazy" src="uploads/<?php echo htmlspecialchars($proof['image_path']); ?>" alt="Waste Proof Image" class="w-full h-48 object-cover">
                         </a>
                         <div class="p-4">
                             <p class="text-sm text-gray-500">Submitted by: <span class="font-semibold text-gray-700"><?php echo htmlspecialchars($proof['username']); ?></span></p>
