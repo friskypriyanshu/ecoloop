@@ -1,0 +1,4 @@
+
+## 2024-05-24 - [Frontend Performance: Eager Loading Mitigation with Client-Side Routing]
+**Learning:** The EcoLoop project utilizes client-side JavaScript routing to show/hide tabs (e.g., Dashboard, Marketplace). This means `index.php` eagerly renders all HTML content—including heavy external images (like API-generated QR codes) and dynamically loaded marketplace images—on the initial page load, even for sections that are initially hidden from the user. This can create a severe bottleneck where hidden assets block the main thread or waste bandwidth.
+**Action:** Always mitigate eager loading bottlenecks by adding `loading="lazy"` to `<img>` and `<iframe>` elements (or using IntersectionObserver for complex components) within hidden sections to defer loading until they become visible to the user.
