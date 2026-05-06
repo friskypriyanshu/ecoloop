@@ -1,0 +1,3 @@
+## 2024-05-06 - Eager Loading in Client-Side Routing
+**Learning:** The application uses client-side JavaScript routing to hide/show tabs, but `index.php` renders all HTML content (including all images within hidden sections) on the initial page load. This causes the browser to download images for tabs the user hasn't even visited yet, creating a significant bandwidth and performance bottleneck on initial load.
+**Action:** When working on apps that use simple display-toggling for routing rather than actual separate pages or dynamic loading, aggressively use `loading="lazy"` on all media within hidden sections to defer the network requests until the section becomes visible.
