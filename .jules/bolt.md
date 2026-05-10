@@ -1,0 +1,3 @@
+## 2024-05-10 - Lazy Loading Hidden Media Elements on Client-Side Routing
+**Learning:** EcoLoop's architecture uses client-side JavaScript routing to hide/show tabs, but `index.php` renders all HTML content upfront on the initial page load. This causes hidden media elements (like QR codes and marketplace images) to be loaded eagerly, which can block the initial rendering of the application.
+**Action:** When implementing new features or optimizing existing ones, be mindful of eager loading bottlenecks. Always add `loading="lazy"` to offscreen images, especially those in hidden tabs, to prevent blocking the initial render of the page.
