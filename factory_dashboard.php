@@ -68,7 +68,8 @@ try {
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0">
                                          <a href="uploads/<?php echo htmlspecialchars($entry['image_path']); ?>" target="_blank">
-                                            <img class="h-12 w-12 rounded object-cover" src="uploads/<?php echo htmlspecialchars($entry['image_path']); ?>" alt="Organic Waste">
+                                            <!-- Bolt: Adding lazy loading to defer offscreen images and improve initial load time. -->
+                                            <img class="h-12 w-12 rounded object-cover" src="uploads/<?php echo htmlspecialchars($entry['image_path']); ?>" alt="Organic Waste" loading="lazy">
                                          </a>
                                     </div>
                                     <div class="ml-4">
