@@ -1,0 +1,3 @@
+## 2026-05-18 - Mitigating Eager Loading in SPA-like Architectures
+**Learning:** The EcoLoop project utilizes client-side routing that simply hides and shows distinct sections of the DOM, meaning `index.php` renders all content—including hidden tabs—on the initial page load. This causes significant eager loading bottlenecks for heavy media elements located within non-active tabs.
+**Action:** When working on similar frontend architectures, aggressively employ `loading="lazy"` on off-screen or initially hidden media elements (like images or embeds) to defer their loading until they actually become visible, preventing them from blocking the initial render of the active view.
