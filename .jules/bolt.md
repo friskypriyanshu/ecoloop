@@ -1,0 +1,3 @@
+## 2024-06-11 - [Lazy Loading Images in Client-Side Routed PHP Apps]
+**Learning:** EcoLoop uses a client-side JavaScript router that loads and hides all tabs (e.g., `#marketplace`, `#dashboard`) within a single `index.php` load. This causes the browser to eagerly load all images across all tabs on initial load, causing a performance bottleneck, particularly for external API calls like QR codes and dynamic marketplace images.
+**Action:** Always add `loading="lazy"` to `<img>` tags (especially those hidden initially by the router) in this specific architecture to defer image loading until they become visible when the user navigates to their respective tabs.
